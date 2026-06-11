@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using System.Collections;
+using System.Collections.Generic;
 public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Speed Attributes")]
@@ -11,6 +12,10 @@ public class NewPlayerMovement : MonoBehaviour
     private bool right ;
     private float angle = 1f;
     [SerializeField] private GameObject waytogo;
+    [Header("Art Attributes")]
+    [SerializeField] ParticleSystem particlesystem;
+
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -76,6 +81,10 @@ public class NewPlayerMovement : MonoBehaviour
             angle = angle - 0.4f;
             transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
         }
+        if(speed <= 7)
+        {
+            StartCoroutine(Boost());
+        }
 
         
 
@@ -84,7 +93,7 @@ public class NewPlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (isCharging == true && speed < 5f)
+        if (isCharging == true && speed < 7f)
             {
                 speed = speed +0.1f;
 
@@ -92,5 +101,13 @@ public class NewPlayerMovement : MonoBehaviour
             
         Debug.Log (speed);
 
+    }
+    IEnumerator Boost()
+    {
+        
+        yield return new WaitForSeconds(2f);
+        speedBoost = 3f;
+        particlesystem.Play();
+        yield break;
     }
 }
