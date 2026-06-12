@@ -4,8 +4,10 @@ using System.Collections.Generic;
 public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Speed Attributes")]
-    public static float speed = 1f;
+    public static float speed = 2.5f;
     public static float speedBoost = 1f;
+    public static bool slowDown;
+    public static float chargeSpeed = 1f;
     private bool isCharging ;
     [Header("direction Attributes")]
     private bool left ;
@@ -27,6 +29,7 @@ public class NewPlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
         isCharging = true;
         if (isCharging == true)
         {
@@ -34,57 +37,83 @@ public class NewPlayerMovement : MonoBehaviour
 
         }
 
-        
-        
-        
         if (Input.GetKeyDown(KeyCode.A))
         {
            
           
             left = true;
-           
-            
+ 
         }
         if (Input.GetKeyUp(KeyCode.A))
         {
-           
-          
+
             left = false;
-           
-            
+  
         }
         if (left == true)
         {
             transform.eulerAngles = new Vector3 (0, 0, angle);
-            angle = angle + 0.4f;
-            transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
+            angle = angle + 0.6f;
+            //angle = Mathf.MoveTowards(angle, 0.8f, 20f * Time.fixedDeltaTime);
+            //transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
         }
         if (Input.GetKeyDown(KeyCode.D))
-        {
-           
-          
-            right = true;
-           
-            
+        {    
+            right = true;     
         }
         if (Input.GetKeyUp(KeyCode.D))
-        {
-           
-          
-            right = false;
-           
-            
+        { 
+            right = false;       
         }
         if (right == true)
         {
             transform.eulerAngles = new Vector3 (0, 0, angle);
-            angle = angle - 0.4f;
-            transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
+            angle = angle - 0.6f;
+            //angle = Mathf.MoveTowards(angle, -0.8f, 20f * Time.fixedDeltaTime);
+            //transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
         }
-        if(speed <= 7)
+        if(speed >= 7.5f)
         {
             StartCoroutine(Boost());
         }
+         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            slowDown = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+           
+            slowDown = false;
+            speed = speed + chargeSpeed;
+           
+        }
+        if(slowDown == true)
+        {
+            if(chargeSpeed <15f)
+            {
+              chargeSpeed = chargeSpeed + 1f;  
+            }
+            
+            if(speed >= 2)
+            {
+                speed = speed -0.05f;
+            }
+            
+            
+        }
+        if(slowDown == false)
+        {
+            speed = Mathf.MoveTowards(speed, 7.5f, 0.5f * Time.fixedDeltaTime);
+       
+           
+            
+            
+            
+        }
+
+            
+
 
         
 
@@ -93,20 +122,21 @@ public class NewPlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (isCharging == true && speed < 7f)
+        if (isCharging == true && speed < 7.5f && slowDown == false )
             {
-                speed = speed +0.1f;
+                speed = Mathf.MoveTowards(speed, 7.5f, 100f * Time.fixedDeltaTime);
 
             }
             
         Debug.Log (speed);
+        
 
     }
     IEnumerator Boost()
     {
         
         yield return new WaitForSeconds(2f);
-        speedBoost = 3f;
+        speedBoost = 2.3f;
         particlesystem.Play();
         yield break;
     }
