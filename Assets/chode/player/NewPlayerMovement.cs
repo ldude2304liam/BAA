@@ -1,143 +1,203 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+
 public class NewPlayerMovement : MonoBehaviour
 {
-    [Header("Speed Attributes")]
-    public static float speed = 2.5f;
-    public static float speedBoost = 1f;
-    public static bool slowDown;
-    public static float chargeSpeed = 1f;
-    private bool isCharging ;
-    [Header("direction Attributes")]
-    private bool left ;
-    private bool right ;
-    private float angle = 1f;
-    [SerializeField] private GameObject waytogo;
-    [Header("Art Attributes")]
-    [SerializeField] ParticleSystem particlesystem;
+    // ─────────────────────────────────────────
+    //  SPEED SETTINGS
+    // ─────────────────────────────────────────
+    [Header("Speed Settings")]
+    [Tooltip("How fast speed naturally climbs toward the next threshold")]
+    public float acceleration = 0.4f;
 
+    [Tooltip("triggers Boost 1")]
+    public float boost1Threshold = 8.5f;
 
+    [Tooltip("triggers Boost 2")]
+    public float boost2Threshold = 25f;
 
+    [Tooltip("speed cap (Stage 2 ceiling)")]
+    public float maxSpeed = 40f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [Tooltip("Flat speed added when a boost fires")]
+    public float boostSpeedBonus = 5.5f;
+    /// <summary>
+    /// ////// charge
+    /// </summary>
+    [Header("Charge Settings")]
+    [Tooltip("Max bonus speed the charge can store")]
+    public float maxChargeSpeed = 15f;
+
+    [Tooltip("How fast the charge builds while Space is held")]
+    public float chargeRate = 1f;
+
+    [Tooltip("How much speed is bled off per frame while charging")]
+    public float chargeDrainRate = 0.05f;
+
+    //  TURNING 
+    [Header("Turnng Settings")]
+    public float turnRate = 0.6f;
+
+/// <summary>
+/// /feedback
+/// </summary>
+    [Header("feedback")]
+    [SerializeField] private ParticleSystem boostParticles;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Tooltip("Default colour (Stage 0)")]
+    public Color colorStage0 = Color.white;
+
+    [Tooltip("Colour first boost (Stage 1)")]
+    public Color colorStage1 = Color.yellow;
+
+    [Tooltip("Colour after second boost (Stage 2)")]
+    public Color colorStage2 = Color.red;
+
+   
+    // currentStage: 0 = normal, 1 = after boost 1, 2 = after boost 2
+    private int currentStage = 0;
+
+    private float speed = 1f;
+    private float chargeSpeed = 0f;
+    private bool isCharging = false;
+    private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
+
+    private float angle = 0f;
+    private bool left = false;
+    private bool right = false;
+
+    // Speed floor for each stage (so demotion lands here, not at 0)
+    private float[] stageFloor = { 1f, 25f, 30f }; // array to store the minimum speed of each level
+
+    // ─────────────────────────────────────────
+    //  TARGET SPEED per stage (what the auto-
+    //  climb moves toward before the boost fires)
+    // ─────────────────────────────────────────
+    private float TargetSpeedForStage()
+    {
+        switch (currentStage) //switches when it gets hit the threshold
+        {
+            case 0: return boost1Threshold;
+            case 1: return boost2Threshold;
+            default: return maxSpeed;
+        }
+    }
+
+    // ════════════════════════════════════════
     void Start()
     {
-        
+        ApplyStageColor();
     }
 
-    // Update is called once per frame
+    // ════════════════════════════════════════
     void Update()
     {
-        transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
-        isCharging = true;
-        if (isCharging == true)
-        {
-            transform.position += transform.up*speed*speedBoost*Time.deltaTime;
+        controls();
+        HandleChargeInput();
+        MoveForward();
+        CheckBoostTrigger();
 
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-           
-          
-            left = true;
- 
-        }
-        if (Input.GetKeyUp(KeyCode.A))
-        {
-
-            left = false;
-  
-        }
-        if (left == true)
-        {
-            transform.eulerAngles = new Vector3 (0, 0, angle);
-            angle = angle + 0.6f;
-            //angle = Mathf.MoveTowards(angle, 0.8f, 20f * Time.fixedDeltaTime);
-            //transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {    
-            right = true;     
-        }
-        if (Input.GetKeyUp(KeyCode.D))
-        { 
-            right = false;       
-        }
-        if (right == true)
-        {
-            transform.eulerAngles = new Vector3 (0, 0, angle);
-            angle = angle - 0.6f;
-            //angle = Mathf.MoveTowards(angle, -0.8f, 20f * Time.fixedDeltaTime);
-            //transform.position = Vector2.MoveTowards(transform.position ,waytogo.transform.position, speed * Time.deltaTime);
-        }
-        if(speed >= 7.5f)
-        {
-            StartCoroutine(Boost());
-        }
-         if (Input.GetKeyDown(KeyCode.Space))
-        {
-            slowDown = true;
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-           
-            slowDown = false;
-            speed = speed + chargeSpeed;
-           
-        }
-        if(slowDown == true)
-        {
-            if(chargeSpeed <15f)
-            {
-              chargeSpeed = chargeSpeed + 1f;  
-            }
-            
-            if(speed >= 2)
-            {
-                speed = speed -0.05f;
-            }
-            
-            
-        }
-        if(slowDown == false)
-        {
-            speed = Mathf.MoveTowards(speed, 7.5f, 0.5f * Time.fixedDeltaTime);
-       
-           
-            
-            
-            
-        }
-
-            
-
-
-        
-
-        
-        
+        // Debug
+        Debug.Log($"Stage: {currentStage} Speed: {speed:F2} charge: {chargeSpeed}");
     }
+
     void FixedUpdate()
     {
-        if (isCharging == true && speed < 7.5f && slowDown == false )
-            {
-                speed = Mathf.MoveTowards(speed, 7.5f, 100f * Time.fixedDeltaTime);
-
-            }
-            
-        Debug.Log (speed);
-        
-
+        // Auto-climb speed toward the current stage's ceiling (when not charging)
+        if (!isCharging)
+        {
+            float target = TargetSpeedForStage();
+            speed = Mathf.MoveTowards(speed, target, acceleration * Time.fixedDeltaTime);
+        }
     }
-    IEnumerator Boost()
+
+    void MoveForward()
     {
-        
-        yield return new WaitForSeconds(2f);
-        speedBoost = 2.3f;
-        particlesystem.Play();
-        yield break;
+        transform.position += transform.up * speed * Time.deltaTime;
+    }
+    /// <summary>
+    /// /////////////////
+    /// </summary>
+    void controls()
+    {
+        if (Input.GetKeyDown(KeyCode.A)) left = true;
+        if (Input.GetKeyUp(KeyCode.A))  left = false;
+        if (Input.GetKeyDown(KeyCode.D)) right = true;
+        if (Input.GetKeyUp(KeyCode.D))  right = false;
+
+        if (left)
+        {
+            angle += turnRate;
+            transform.eulerAngles = new Vector3(0f, 0f, angle);
+        }
+        if (right)
+        {
+            angle -= turnRate;
+            transform.eulerAngles = new Vector3(0f, 0f, angle);
+        }
+    }
+    void HandleChargeInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isCharging = true;
+            chargeSpeed = 0f;
+        }
+
+        if (isCharging)
+        {
+            // Build up the charge
+            if (chargeSpeed < maxChargeSpeed)
+                chargeSpeed += chargeRate * Time.deltaTime * 60f; 
+
+            // Drain current speed while charging 
+            if (speed >= stageFloor[currentStage] + 0.1f)
+                speed -= chargeDrainRate;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space) && isCharging)
+        {
+            isCharging = false;
+            speed = Mathf.Min(speed + chargeSpeed, maxSpeed);
+            chargeSpeed = 0f;
+        }
+    }
+
+    /// <summary>
+    ///  BOOST TRIGGER
+    /// </summary>
+    void CheckBoostTrigger()
+    {
+        if (boostPending) return;
+
+        if (currentStage == 0 && speed >= boost1Threshold)
+        {
+            boostPending = true;
+            StartCoroutine(TriggerBoost(1));
+        }
+        else if (currentStage == 1 && speed >= boost2Threshold)
+        {
+            boostPending = true;
+            StartCoroutine(TriggerBoost(2));
+        }
+    }
+
+    IEnumerator TriggerBoost(int newStage)
+    {
+        yield return new WaitForSeconds(0.5f); //dramatic pause
+
+        currentStage = newStage;
+        speed += boostSpeedBonus;              // jump forward
+        boostPending = false;
+
+        ApplyStageColor();
+
+        if (boostParticles != null)
+            boostParticles.Play();
+    }
+    void ApplyStageColor()
+    {
+      
     }
 }

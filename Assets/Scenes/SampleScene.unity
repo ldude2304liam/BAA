@@ -1529,8 +1529,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87516d5e29e891848a308746cb27e4fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waytogo: {fileID: 1962007095}
-  particlesystem: {fileID: 1666228788}
+  acceleration: 3
+  boost1Threshold: 7.5
+  boost2Threshold: 15
+  maxSpeed: 22
+  boostSpeedBonus: 2.5
+  maxChargeSpeed: 15
+  chargeRate: 1
+  chargeDrainRate: 0.05
+  turnRate: 0.6
+  boostParticles: {fileID: 1666228788}
+  spriteRenderer: {fileID: 1432154191}
+  colorStage0: {r: 1, g: 1, b: 1, a: 1}
+  colorStage1: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  colorStage2: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &1496561125
 GameObject:
   m_ObjectHideFlags: 0
