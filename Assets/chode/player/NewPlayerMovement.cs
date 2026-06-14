@@ -7,10 +7,10 @@ public class NewPlayerMovement : MonoBehaviour
     //
     [Header("Speed Settings")]
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
-    public float acceleration = 0.4f;
+    public float acceleration = 0.6f;
 
     [Tooltip("triggers Boost 1")]
-    public float boost1Threshold = 8.5f;
+    public static float boost1Threshold = 8.5f;
 
     [Tooltip("triggers Boost 2")]
     public float boost2Threshold = 25f;
@@ -32,8 +32,9 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("how much speed is taken per frame while charging")]
     public float chargeDrainRate = 0.05f;
 
-    //  TURNING 
-    [Header("Turnng Settings")]
+
+    //  TURNING a
+    [Header("Turning Settings")]
     public float turnRate = 0.6f;
 
 /// <summary>
@@ -52,11 +53,14 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("Colour after second boost (Stage 2)")]
     public Color colorStage2 = Color.red;
 
+    [Tooltip("Colour after you hit enemy")]
+    public Color colorEnemy = Color.blue;
+
    
     // currentStage: 0 = normal, 1 = after boost 1, 2 = after boost 2
     private int currentStage = 0;
 
-    private float speed = 1f;
+    public static float speed = 1f;
     private float chargeSpeed = 0f;
     private bool isCharging = false;
     private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
@@ -143,6 +147,7 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (isCharging)
         {
+            
             // Build up the charge
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f; 
@@ -150,6 +155,10 @@ public class NewPlayerMovement : MonoBehaviour
             // Drain current speed while charging 
             if (speed >= stageFloor[currentStage] + 0.1f)
                 speed -= chargeDrainRate;
+            //if (speed >= stageFloor[0] + 0.1f && speed <= stageFloor[1] +0.1f )
+               // speed -= chargeDrainRate * 2 ;
+            if (speed >= stageFloor[1] + 0.1f )
+                speed -= chargeDrainRate * 2f ;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
@@ -192,12 +201,13 @@ public class NewPlayerMovement : MonoBehaviour
         if (boostParticles != null)
             boostParticles.Play();
     }
+
 ///I need a cooldown or something that makes you feel more the deceleration
     public void TakeHit()
     {
         if (currentStage == 0) return; // already at base, nothing to lose
  
-        currentStage--;
+        currentStage = 0;
         speed = stageFloor[currentStage]; // drop to floor of previous stage
         boostPending = false;             // reset boost guard
         StopAllCoroutines();
@@ -209,12 +219,47 @@ public class NewPlayerMovement : MonoBehaviour
  
         Debug.Log($"hit {currentStage}");
     }
+
+    public void HitGuy()
+    {
+        if (spriteRenderer == null) return;
+        {
+            spriteRenderer.color = colorEnemy; 
+            boostPending = true;
+            
+            StartCoroutine(TriggerEnemyBoost());
+            StartCoroutine(GameFeelPause());
+
+            
+
+        }
+        
+    }
+    IEnumerator TriggerEnemyBoost()
+    {
+        yield return new WaitForSeconds(0.1f); //dramatic pause
+        speed += boostSpeedBonus;              // jump forward
+        boostPending = false;
+        if (boostParticles != null)
+        {
+           boostParticles.Play(); 
+        }          
+    }
+    IEnumerator GameFeelPause()
+    {
+        Time.timeScale = 0.1f;
+        
+        yield return new WaitForSeconds(0.02f);
+        Time.timeScale = 1f;
+    }
  
 
     void OnCollisionEnter2D(Collision2D col)
      {
-         if (col.gameObject.CompareTag("Obstacle"))
+        if (col.gameObject.CompareTag("Obstacle"))
              TakeHit();
+        if (col.gameObject.CompareTag("Enemy")&& speed >= boost1Threshold )
+            HitGuy();
     }
  
 
