@@ -3,9 +3,8 @@ using System.Collections;
 
 public class NewPlayerMovement : MonoBehaviour
 {
-    // ─────────────────────────────────────────
     //  SPEED SETTINGS
-    // ─────────────────────────────────────────
+    //
     [Header("Speed Settings")]
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
     public float acceleration = 0.4f;
@@ -19,19 +18,18 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("speed cap (Stage 2 ceiling)")]
     public float maxSpeed = 40f;
 
-    [Tooltip("Flat speed added when a boost fires")]
+    [Tooltip("flat speed added when a boost fires")]
     public float boostSpeedBonus = 5.5f;
     /// <summary>
     /// ////// charge
     /// </summary>
-    [Header("Charge Settings")]
-    [Tooltip("Max bonus speed the charge can store")]
+    [Header("charge Settings")]
     public float maxChargeSpeed = 15f;
 
     [Tooltip("How fast the charge builds while Space is held")]
     public float chargeRate = 1f;
 
-    [Tooltip("How much speed is bled off per frame while charging")]
+    [Tooltip("how much speed is taken per frame while charging")]
     public float chargeDrainRate = 0.05f;
 
     //  TURNING 
@@ -84,13 +82,11 @@ public class NewPlayerMovement : MonoBehaviour
         }
     }
 
-    // ════════════════════════════════════════
     void Start()
     {
         ApplyStageColor();
     }
 
-    // ════════════════════════════════════════
     void Update()
     {
         controls();
@@ -196,8 +192,40 @@ public class NewPlayerMovement : MonoBehaviour
         if (boostParticles != null)
             boostParticles.Play();
     }
+///I need a cooldown or something that makes you feel more the deceleration
+    public void TakeHit()
+    {
+        if (currentStage == 0) return; // already at base, nothing to lose
+ 
+        currentStage--;
+        speed = stageFloor[currentStage]; // drop to floor of previous stage
+        boostPending = false;             // reset boost guard
+        StopAllCoroutines();
+ 
+        ApplyStageColor();
+ 
+        if (boostParticles != null)
+            boostParticles.Stop();
+ 
+        Debug.Log($"hit {currentStage}");
+    }
+ 
+
+    void OnCollisionEnter2D(Collision2D col)
+     {
+         if (col.gameObject.CompareTag("Obstacle"))
+             TakeHit();
+    }
+ 
+
     void ApplyStageColor()
     {
-      
+        if (spriteRenderer == null) return;
+        switch (currentStage)
+        {
+            case 0: spriteRenderer.color = colorStage0; break;
+            case 1: spriteRenderer.color = colorStage1; break;
+            case 2: spriteRenderer.color = colorStage2; break;
+        }
     }
 }
