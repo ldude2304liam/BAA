@@ -152,13 +152,20 @@ public class NewPlayerMovement : MonoBehaviour
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f; 
 
-            // Drain current speed while charging 
+  /*           // Drain current speed while charging 
             if (speed >= stageFloor[currentStage] + 0.1f)
                 speed -= chargeDrainRate;
             //if (speed >= stageFloor[0] + 0.1f && speed <= stageFloor[1] +0.1f )
                // speed -= chargeDrainRate * 2 ;
             if (speed >= stageFloor[1] + 0.1f )
-                speed -= chargeDrainRate * 2f ;
+                speed -= chargeDrainRate * 2f ; */
+                            // Drain speed while charging — exclusive per stage so they never stack
+            float drain = chargeDrainRate;          
+            if (currentStage == 1) drain *= 3f;     
+            if (currentStage == 2) drain *= 5f;   
+ 
+            if (speed >= stageFloor[currentStage] + 0.2f)
+                speed -= drain;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
