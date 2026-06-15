@@ -67,6 +67,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     public static float speed = 1f;
     private float chargeSpeed = 0f;
+    //private float chargeSpeed2 = 100f;
     private bool isCharging = false;
     private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
 
@@ -157,19 +158,26 @@ public class NewPlayerMovement : MonoBehaviour
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f; 
 
-            // Drain current speed while charging 
+  /*           // Drain current speed while charging 
             if (speed >= stageFloor[currentStage] + 0.1f)
                 speed -= chargeDrainRate;
             //if (speed >= stageFloor[0] + 0.1f && speed <= stageFloor[1] +0.1f )
                // speed -= chargeDrainRate * 2 ;
             if (speed >= stageFloor[1] + 0.1f )
-                speed -= chargeDrainRate * 2f ;
+                speed -= chargeDrainRate * 2f ; */
+                            // Drain speed while charging — exclusive per stage so they never stack
+            float drain = chargeDrainRate;          
+            if (currentStage == 1) drain *= 3f;     
+            if (currentStage == 2) drain *= 3f;   
+ 
+            if (speed >= stageFloor[currentStage] + 0.2f)
+                speed -= drain;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
-            // Scale the charge bonus based on current stage
+            // Scale based on current stage
             float stageMultiplier = 1f;
             if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
             if (currentStage == 2) stageMultiplier = chargeMultiplierStage2;
@@ -203,7 +211,12 @@ public class NewPlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //dramatic pause
 
         currentStage = newStage;
-        speed += boostSpeedBonus;              // jump forward
+     
+        
+        
+        speed += boostSpeedBonus;    
+        
+        //speed += boostSpeedBonus;              // jump forward
         boostPending = false;
 
         ApplyStageColor();
