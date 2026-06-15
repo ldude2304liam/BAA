@@ -32,6 +32,9 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("how much speed is taken per frame while charging")]
     public float chargeDrainRate = 0.05f;
 
+    public float chargeMultiplierStage1 = 1.5f;
+    public float chargeMultiplierStage2 = 2.5f;
+
 
     //  TURNING a
     [Header("Turning Settings")]
@@ -55,6 +58,8 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("Colour after you hit enemy")]
     public Color colorEnemy = Color.blue;
+
+    public float enemyFlashDuration = 0.2f;
 
    
     // currentStage: 0 = normal, 1 = after boost 1, 2 = after boost 2
@@ -172,15 +177,12 @@ public class NewPlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
-            if(speed >= boost2Threshold)
-            {
-                speed = Mathf.Min(speed + 40 );
-            }
-            else
-            {
-                speed = Mathf.Min(speed + chargeSpeed, maxSpeed);
-            }
-            
+            // Scale based on current stage
+            float stageMultiplier = 1f;
+            if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
+            if (currentStage == 2) stageMultiplier = chargeMultiplierStage2;
+
+            speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
             chargeSpeed = 0f;
         }
     }
@@ -244,16 +246,12 @@ public class NewPlayerMovement : MonoBehaviour
     public void HitGuy()
     {
         if (spriteRenderer == null) return;
-        {
-            spriteRenderer.color = colorEnemy; 
-            boostPending = true;
-            
-            StartCoroutine(TriggerEnemyBoost());
-            StartCoroutine(GameFeelPause());
+ 
+        boostPending = true;
 
-            
-
-        }
+        StartCoroutine(TriggerEnemyBoost());
+        StartCoroutine(EnemyColorFlash());
+        StartCoroutine(GameFeelPause());
         
     }
     IEnumerator TriggerEnemyBoost()
@@ -274,6 +272,12 @@ public class NewPlayerMovement : MonoBehaviour
         Time.timeScale = 1f;
     }
  
+    IEnumerator EnemyColorFlash()
+    {
+        spriteRenderer.color = colorEnemy;         // flash whatever
+        yield return new WaitForSeconds(enemyFlashDuration); // wait
+        ApplyStageColor();                         // back tot he stage color
+    }
 
     void OnCollisionEnter2D(Collision2D col)
      {
