@@ -62,6 +62,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     public static float speed = 1f;
     private float chargeSpeed = 0f;
+    //private float chargeSpeed2 = 100f;
     private bool isCharging = false;
     private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
 
@@ -162,7 +163,7 @@ public class NewPlayerMovement : MonoBehaviour
                             // Drain speed while charging — exclusive per stage so they never stack
             float drain = chargeDrainRate;          
             if (currentStage == 1) drain *= 3f;     
-            if (currentStage == 2) drain *= 5f;   
+            if (currentStage == 2) drain *= 3f;   
  
             if (speed >= stageFloor[currentStage] + 0.2f)
                 speed -= drain;
@@ -171,7 +172,15 @@ public class NewPlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
-            speed = Mathf.Min(speed + chargeSpeed, maxSpeed);
+            if(speed >= boost2Threshold)
+            {
+                speed = Mathf.Min(speed + 40 );
+            }
+            else
+            {
+                speed = Mathf.Min(speed + chargeSpeed, maxSpeed);
+            }
+            
             chargeSpeed = 0f;
         }
     }
@@ -200,7 +209,12 @@ public class NewPlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //dramatic pause
 
         currentStage = newStage;
-        speed += boostSpeedBonus;              // jump forward
+     
+        
+        
+        speed += boostSpeedBonus;    
+        
+        //speed += boostSpeedBonus;              // jump forward
         boostPending = false;
 
         ApplyStageColor();
