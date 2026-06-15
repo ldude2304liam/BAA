@@ -1544,6 +1544,7 @@ MonoBehaviour:
   colorStage1: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   colorStage2: {r: 1, g: 0, b: 0, a: 1}
   colorEnemy: {r: 0, g: 0, b: 1, a: 1}
+  enemyFlashDuration: 0.2
 --- !u!95 &1432154194
 Animator:
   serializedVersion: 7
