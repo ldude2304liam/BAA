@@ -3,100 +3,79 @@ using System.Collections;
 
 public class NewPlayerMovement : MonoBehaviour
 {
-    //  SPEED SETTINGS
-    //
     [Header("Components")]
-    Rigidbody2D rb; 
+    private Rigidbody2D rb;
+
     [Header("Speed Settings")]
-    [Tooltip("How fast speed naturally climbs toward the next threshold")]
-  /*   public float acceleration = 0.6f; */
-  ////different accelerations
+    [Tooltip("Acceleration while in Stage 0")]
     public float accelerationStage0 = 3.0f;
+    [Tooltip("Acceleration while in Stage 1")]
     public float accelerationStage1 = 0.8f;
+    [Tooltip("Acceleration while in Stage 2")]
     public float accelerationStage2 = 0.6f;
 
-    [Tooltip("triggers Boost 1")]
+    [Tooltip("Triggers Boost 1")]
     public static float boost1Threshold = 8.5f;
 
-    [Tooltip("triggers Boost 2")]
+    [Tooltip("Triggers Boost 2")]
     public float boost2Threshold = 25f;
 
-    [Tooltip("speed cap (Stage 2 ceiling)")]
+    [Tooltip("Speed cap (Stage 2 ceiling)")]
     public float maxSpeed = 40f;
 
-    [Tooltip("flat speed added when a boost fires")]
+    [Tooltip("Flat speed added when a boost fires")]
     public float boostSpeedBonus = 5.5f;
-    /// <summary>
-    /// ////// charge
-    /// </summary>
-    [Header("charge Settings")]
+
+    [Header("Charge Settings")]
     public float maxChargeSpeed = 15f;
 
     [Tooltip("How fast the charge builds while Space is held")]
     public float chargeRate = 1f;
 
-    [Tooltip("how much speed is taken per frame while charging")]
+    [Tooltip("How much speed is drained per frame while charging")]
     public float chargeDrainRate = 0.05f;
 
     public float chargeMultiplierStage1 = 1.5f;
     public float chargeMultiplierStage2 = 2.5f;
 
-//////////test
-    private float chargeBurst = 0f; // temporary overlay, does NOT affect base speed
-
-   //how fast the charge burst fades after release
+    [Tooltip("How fast the charge burst fades after release")]
     public float burstDecay = 8f;
 
-
-    //  TURNING a
     [Header("Turning Settings")]
     public float turnRate = 50f;
-
-
     public float turnMultCharge = 10f;
     public float turnMult = 5f;
 
-
-/// <summary>
-/// /feedback
-/// </summary>
-    [Header("feedback")]
+    [Header("Feedback")]
     [SerializeField] private ParticleSystem boostParticles;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Tooltip("Default colour (Stage 0)")]
     public Color colorStage0 = Color.white;
-
-    [Tooltip("Colour first boost (Stage 1)")]
+    [Tooltip("Colour after first boost (Stage 1)")]
     public Color colorStage1 = Color.yellow;
-
     [Tooltip("Colour after second boost (Stage 2)")]
     public Color colorStage2 = Color.red;
-
-    [Tooltip("Colour after you hit enemy")]
+    [Tooltip("Colour flash on hitting an enemy")]
     public Color colorEnemy = Color.blue;
-
     public float enemyFlashDuration = 0.2f;
 
-   
     // currentStage: 0 = normal, 1 = after boost 1, 2 = after boost 2
     private int currentStage = 0;
 
     public static float speed = 1f;
     public float driftFactor = 0.95f;
+
     private float chargeSpeed = 0f;
+    private float chargeBurst = 0f; // temporary overlay, does NOT affect base speed
     private bool isCharging = false;
-    private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
+    private bool boostPending = false; // coroutine only fires once per threshold
 
     private float angle = 0f;
-
-    private float steeringInput = 0;
-    private bool left = false;
-    private bool right = false;
-    private Vector3 MoveForce;
+    private float steeringInput = 0f;
 
     // Speed floor for each stage (so demotion lands here, not at 0)
-    private float[] stageFloor = { 1f, 25f, 30f }; // array to store the minimum speed of each level
+    private float[] stageFloor = { 1f, 25f, 30f };
 
     // ─────────────────────────────────────────
     //  TARGET SPEED per stage (what the auto-
@@ -104,7 +83,7 @@ public class NewPlayerMovement : MonoBehaviour
     // ─────────────────────────────────────────
     private float TargetSpeedForStage()
     {
-        switch (currentStage) //switches when it gets hit the threshold
+        switch (currentStage)
         {
             case 0: return boost1Threshold;
             case 1: return boost2Threshold;
@@ -112,16 +91,15 @@ public class NewPlayerMovement : MonoBehaviour
         }
     }
 
-    ///accelerator
     private float AccelerationForStage()
-{
-    switch (currentStage)
     {
-        case 0: return accelerationStage0;
-        case 1: return accelerationStage1;
-        default: return accelerationStage2;
+        switch (currentStage)
+        {
+            case 0: return accelerationStage0;
+            case 1: return accelerationStage1;
+            default: return accelerationStage2;
+        }
     }
-}
 
     void Awake()
     {
@@ -135,14 +113,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Update()
     {
-        //controls();
         HandleChargeInput();
-        //MoveForward();
         CheckBoostTrigger();
-        //killSideForce();
-        
 
-        // Debug
         Debug.Log($"Stage: {currentStage} Speed: {speed:F2} charge: {chargeSpeed}");
     }
 
@@ -151,78 +124,52 @@ public class NewPlayerMovement : MonoBehaviour
         controls();
         killSideForce();
         MoveForward();
+
         // Auto-climb speed toward the current stage's ceiling (when not charging)
         if (!isCharging)
         {
             float target = TargetSpeedForStage();
-            float accel = AccelerationForStage();  ///try acceleration stages
+            float accel = AccelerationForStage();
             speed = Mathf.MoveTowards(speed, target, accel * Time.fixedDeltaTime);
         }
-         // Burst fades independently, never touches base speed
+
+        // Burst fades independently, never touches base speed
         if (chargeBurst > 0f)
-        chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
+            chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
 
     void MoveForward()
     {
-        //Vector2 forceVector = transform.up * speed * chargeBurst;
-        //rb.AddForce(forceVector , ForceMode2D.Force);
- /*        transform.position += transform.up * speed * Time.deltaTime; */
-         transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
+        transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
     }
-    /// <summary>
-    /// /////////////////
-    /// </summary>
+
     void controls()
     {
-        if (Input.GetKeyDown(KeyCode.A)) left = true;
-        if (Input.GetKeyUp(KeyCode.A))  left = false;
-        if (Input.GetKeyDown(KeyCode.D)) right = true;
-        if (Input.GetKeyUp(KeyCode.D))  right = false;
+        steeringInput = Input.GetAxis("Horizontal");
 
-        float steerInput = Input.GetAxis("Horizontal");
-        transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
-        Vector2 inputVector = Vector2.zero;
-
-        
-        
-
-
-        // if (left)
-        // {
-        //     angle += turnRate;
-        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
-        // }
-        // if (right)      
-        // {
-        //     angle -= turnRate;
-        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
-        // }
-        if(isCharging == true)
+        if (isCharging)
         {
-            angle -= steeringInput * turnRate * turnMultCharge;
+            float speedFactor = Mathf.Lerp(1f, 0.2f, speed / maxSpeed); // reduces turning as speed increases during charging
+            angle -= steeringInput * turnRate * turnMultCharge * speedFactor;
+
         }
+       
         else
         {
             angle -= steeringInput * turnRate * turnMult;
+
         }
 
-        
         rb.MoveRotation(angle);
-        inputVector.x = Input.GetAxis("Horizontal");
-        SetInputVector(inputVector);
-    }
-    public void SetInputVector(Vector2 inputVector)
-    {
-        steeringInput = inputVector.x;
     }
 
-    void killSideForce ()
+    void killSideForce()
     {
-        Vector2 forwardVelocity = transform.up * Vector2.Dot(rb.linearVelocity , transform.up);
-        Vector2 rightVelocity = transform.right * Vector2.Dot(rb.linearVelocity , transform.right);
+        Vector2 forwardVelocity = transform.up * Vector2.Dot(rb.linearVelocity, transform.up);
+        Vector2 rightVelocity = transform.right * Vector2.Dot(rb.linearVelocity, transform.right);
         rb.linearVelocity = forwardVelocity + rightVelocity * driftFactor;
     }
+
     void HandleChargeInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -233,62 +180,42 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (isCharging)
         {
-            
             // Build up the charge
             if (chargeSpeed < maxChargeSpeed)
-                chargeSpeed += chargeRate * Time.deltaTime * 60f; 
+                chargeSpeed += chargeRate * Time.deltaTime * 60f;
 
-            // Drain current speed while charging 
+            // Drain current speed while charging
             if (speed >= stageFloor[currentStage] + 0.1f)
                 speed -= chargeDrainRate;
-            //if (speed >= stageFloor[0] + 0.1f && speed <= stageFloor[1] +0.1f )
-               // speed -= chargeDrainRate * 2 ;
-            if (speed >= stageFloor[1] + 0.1f )
-                speed -= chargeDrainRate * 2f ;
-       
+
+            if (speed >= stageFloor[1] + 0.1f)
+                speed -= chargeDrainRate * 2f;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
-    
-            
+
             // Scale the charge bonus based on current stage
-            // Scale based on current stage
             float stageMultiplier = 1f;
             if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
             if (currentStage == 2) stageMultiplier = chargeMultiplierStage2;
 
+            chargeBurst = chargeSpeed * stageMultiplier; // separate from speed
 
-                chargeBurst = chargeSpeed * stageMultiplier; // separate from speed
-            if(chargeSpeed >=15 )
-            {
-               speed = speed + 2; 
-            }
-                chargeSpeed = 0f;
-            if(currentStage == 0)
-            {
-                speed = speed +5f;
-            }
-               
-            
-                
-            
-   
-      
+            if (chargeSpeed >= 15)
+                speed = speed + 2;
 
-            
-            
-/*             speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
-            chargeSpeed = 0f; */
+            chargeSpeed = 0f;
+
+            if (currentStage == 0)
+                speed = speed + 5f;
+
             speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
             chargeSpeed = 0f;
         }
     }
 
-    /// <summary>
-    ///  BOOST TRIGGER
-    /// </summary>
     void CheckBoostTrigger()
     {
         if (boostPending) return;
@@ -307,10 +234,10 @@ public class NewPlayerMovement : MonoBehaviour
 
     IEnumerator TriggerBoost(int newStage)
     {
-        yield return new WaitForSeconds(0.5f); //dramatic pause
+        yield return new WaitForSeconds(0.5f); // dramatic pause
 
         currentStage = newStage;
-        speed += boostSpeedBonus;              // jump forward
+        speed += boostSpeedBonus;
         boostPending = false;
 
         ApplyStageColor();
@@ -319,68 +246,64 @@ public class NewPlayerMovement : MonoBehaviour
             boostParticles.Play();
     }
 
-///I need a cooldown or something that makes you feel more the deceleration
     public void TakeHit()
     {
         if (currentStage == 0) return; // already at base, nothing to lose
- 
+
         currentStage = 0;
-        speed = stageFloor[currentStage]; // drop to floor of previous stage
-        boostPending = false;             // reset boost guard
+        speed = stageFloor[currentStage];
+        boostPending = false;
         StopAllCoroutines();
- 
+
         ApplyStageColor();
- 
+
         if (boostParticles != null)
             boostParticles.Stop();
- 
+
         Debug.Log($"hit {currentStage}");
     }
 
     public void HitGuy()
     {
         if (spriteRenderer == null) return;
- 
+
         boostPending = true;
 
         StartCoroutine(TriggerEnemyBoost());
         StartCoroutine(EnemyColorFlash());
         StartCoroutine(GameFeelPause());
-        
     }
+
     IEnumerator TriggerEnemyBoost()
     {
-        yield return new WaitForSeconds(0.1f); //dramatic pause
-        speed += boostSpeedBonus;              // jump forward
+        yield return new WaitForSeconds(0.1f);
+        speed += boostSpeedBonus;
         boostPending = false;
         if (boostParticles != null)
-        {
-           boostParticles.Play(); 
-        }          
+            boostParticles.Play();
     }
+
     IEnumerator GameFeelPause()
     {
         Time.timeScale = 0.1f;
-        
         yield return new WaitForSeconds(0.02f);
         Time.timeScale = 1f;
     }
- 
+
     IEnumerator EnemyColorFlash()
     {
-        spriteRenderer.color = colorEnemy;         // flash whatever
-        yield return new WaitForSeconds(enemyFlashDuration); // wait
-        ApplyStageColor();                         // back tot he stage color
+        spriteRenderer.color = colorEnemy;
+        yield return new WaitForSeconds(enemyFlashDuration);
+        ApplyStageColor();
     }
 
     void OnCollisionEnter2D(Collision2D col)
-     {
+    {
         if (col.gameObject.CompareTag("Obstacle"))
-             TakeHit();
-        if (col.gameObject.CompareTag("Enemy")&& speed >= boost1Threshold )
+            TakeHit();
+        if (col.gameObject.CompareTag("Enemy") && speed >= boost1Threshold)
             HitGuy();
     }
- 
 
     void ApplyStageColor()
     {
