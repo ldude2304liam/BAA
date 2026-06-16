@@ -1430,8 +1430,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.6814815, y: 1.9777777}
-    newSize: {x: 2.27, y: 2.67}
+    oldSize: {x: 2.07, y: 2.37}
+    newSize: {x: 2.07, y: 2.37}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -1482,12 +1482,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1715694909886081764, guid: 7ff77dd6da79e9f4296ae0121e641e5d, type: 3}
+  m_Sprite: {fileID: 177328244634751337, guid: 12b7d602d8e1f30419b74fdb0df2b13e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.27, y: 2.67}
+  m_Size: {x: 2.07, y: 2.37}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1530,13 +1530,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87516d5e29e891848a308746cb27e4fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceleration: 0.75
+  accelerationStage0: 2
+  accelerationStage1: 0.6
+  accelerationStage2: 0.6
   boost2Threshold: 25
   maxSpeed: 33.6
   boostSpeedBonus: 5.5
   maxChargeSpeed: 15
   chargeRate: 1
   chargeDrainRate: 4.6
+  chargeMultiplierStage1: 1.5
+  chargeMultiplierStage2: 2.5
+  burstDecay: 8
   turnRate: 0.6
   boostParticles: {fileID: 1666228788}
   spriteRenderer: {fileID: 1432154191}
