@@ -1547,13 +1547,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   accelerationStage0: 2
-  accelerationStage1: 0.6
+  accelerationStage1: 0.8
   accelerationStage2: 0.6
   boost2Threshold: 25
   maxSpeed: 33.6
-  boostSpeedBonus: 5.5
+  boostSpeedBonus: 6
   maxChargeSpeed: 15
-  chargeRate: 1
+  chargeRate: 2
   chargeDrainRate: 4.6
   chargeMultiplierStage1: 1.5
   chargeMultiplierStage2: 2.5
