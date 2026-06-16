@@ -437,8 +437,8 @@ Transform:
   m_GameObject: {fileID: 175474095}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.70719737, w: 0.7070162}
-  m_LocalPosition: {x: -1.1, y: 17.6, z: 0}
-  m_LocalScale: {x: 4.727043, y: 84.80369, z: 1}
+  m_LocalPosition: {x: -10.1, y: 19.8, z: 0}
+  m_LocalScale: {x: 4.727043, y: 68.40041, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -709,6 +709,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -803,7 +804,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 23.3
+  orthographic size: 25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -866,6 +867,21 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9474f363eb62ea749a3f197926ca0717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1432154192}
+  offset: {x: 0, y: 0, z: -10}
+  smoothSpeed: 5
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,8 +1181,8 @@ Transform:
   m_GameObject: {fileID: 755998635}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.70719737, w: 0.7070162}
-  m_LocalPosition: {x: -0.8, y: -25.6, z: 0}
-  m_LocalScale: {x: 4.727043, y: 76.388054, z: 1}
+  m_LocalPosition: {x: -0.2, y: -25.6, z: 0}
+  m_LocalScale: {x: 4.727043, y: 88.14369, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1299,8 +1315,8 @@ Transform:
   m_GameObject: {fileID: 842636986}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.2, y: -5.1, z: 0}
-  m_LocalScale: {x: 5.907902, y: 40.46203, z: 1}
+  m_LocalPosition: {x: 41.6, y: -1.2, z: 0}
+  m_LocalScale: {x: 5.907902, y: 46.53133, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1583,8 +1599,8 @@ Transform:
   m_GameObject: {fileID: 1096370706}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -38.6, y: -5.1, z: 0}
-  m_LocalScale: {x: 5.907902, y: 43.352173, z: 1}
+  m_LocalPosition: {x: -41.5, y: -3.4, z: 0}
+  m_LocalScale: {x: 5.907902, y: 45.540104, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1792,7 +1808,6 @@ GameObject:
   - component: {fileID: 1432154189}
   - component: {fileID: 1432154193}
   - component: {fileID: 1432154194}
-  - component: {fileID: 1432154195}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1966,19 +1981,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   accelerationStage0: 2
-  accelerationStage1: 0.6
+  accelerationStage1: 0.8
   accelerationStage2: 0.6
   boost2Threshold: 25
   maxSpeed: 33.6
-  boostSpeedBonus: 5.5
+  boostSpeedBonus: 6
   maxChargeSpeed: 15
-  chargeRate: 1
+  chargeRate: 2
   chargeDrainRate: 4.6
   chargeMultiplierStage1: 1.5
   chargeMultiplierStage2: 2.5
   burstDecay: 8
   turnRate: 0.6
   turnMultCharge: 10
+  turnMult: 3.3
   turnMult: 5
   boostParticles: {fileID: 1666228788}
   spriteRenderer: {fileID: 1432154191}
@@ -2010,23 +2026,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1432154195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1432154188}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7543c2831c7c3d140ada453ae72c93ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 50
-  MaxSpeed: 15
-  Drag: 0.98
-  SteerAngle: 20
-  Traction: 1
 --- !u!1 &1496561125
 GameObject:
   m_ObjectHideFlags: 0
