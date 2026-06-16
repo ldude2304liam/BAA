@@ -52,6 +52,11 @@ public class NewPlayerMovement : MonoBehaviour
     [Header("Turning Settings")]
     public float turnRate = 50f;
 
+
+    public float turnMultCharge = 10f;
+    public float turnMult = 5f;
+
+
 /// <summary>
 /// /feedback
 /// </summary>
@@ -195,11 +200,11 @@ public class NewPlayerMovement : MonoBehaviour
         // }
         if(isCharging == true)
         {
-            angle -= steeringInput * turnRate * 10;
+            angle -= steeringInput * turnRate * turnMultCharge;
         }
         else
         {
-            angle -= steeringInput * turnRate * 5;
+            angle -= steeringInput * turnRate * turnMult;
         }
 
         
