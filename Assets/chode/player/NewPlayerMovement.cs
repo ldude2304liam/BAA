@@ -5,6 +5,8 @@ public class NewPlayerMovement : MonoBehaviour
 {
     //  SPEED SETTINGS
     //
+    [Header("Components")]
+    Rigidbody2D rb; 
     [Header("Speed Settings")]
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
   /*   public float acceleration = 0.6f; */
@@ -48,7 +50,12 @@ public class NewPlayerMovement : MonoBehaviour
 
     //  TURNING a
     [Header("Turning Settings")]
-    public float turnRate = 0.6f;
+    public float turnRate = 50f;
+
+
+    public float turnMultCharge = 10f;
+    public float turnMult = 5f;
+
 
 /// <summary>
 /// /feedback
@@ -76,13 +83,17 @@ public class NewPlayerMovement : MonoBehaviour
     private int currentStage = 0;
 
     public static float speed = 1f;
+    public float driftFactor = 0.95f;
     private float chargeSpeed = 0f;
     private bool isCharging = false;
     private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
 
     private float angle = 0f;
+
+    private float steeringInput = 0;
     private bool left = false;
     private bool right = false;
+    private Vector3 MoveForce;
 
     // Speed floor for each stage (so demotion lands here, not at 0)
     private float[] stageFloor = { 1f, 25f, 30f }; // array to store the minimum speed of each level
@@ -112,6 +123,11 @@ public class NewPlayerMovement : MonoBehaviour
     }
 }
 
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     void Start()
     {
         ApplyStageColor();
@@ -119,10 +135,12 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Update()
     {
-        controls();
+        //controls();
         HandleChargeInput();
-        MoveForward();
+        //MoveForward();
         CheckBoostTrigger();
+        //killSideForce();
+        
 
         // Debug
         Debug.Log($"Stage: {currentStage} Speed: {speed:F2} charge: {chargeSpeed}");
@@ -130,6 +148,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        controls();
+        killSideForce();
+        MoveForward();
         // Auto-climb speed toward the current stage's ceiling (when not charging)
         if (!isCharging)
         {
@@ -144,6 +165,8 @@ public class NewPlayerMovement : MonoBehaviour
 
     void MoveForward()
     {
+        //Vector2 forceVector = transform.up * speed * chargeBurst;
+        //rb.AddForce(forceVector , ForceMode2D.Force);
  /*        transform.position += transform.up * speed * Time.deltaTime; */
          transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
     }
@@ -157,16 +180,48 @@ public class NewPlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D)) right = true;
         if (Input.GetKeyUp(KeyCode.D))  right = false;
 
-        if (left)
+        float steerInput = Input.GetAxis("Horizontal");
+        transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
+        Vector2 inputVector = Vector2.zero;
+
+        
+        
+
+
+        // if (left)
+        // {
+        //     angle += turnRate;
+        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
+        // }
+        // if (right)      
+        // {
+        //     angle -= turnRate;
+        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
+        // }
+        if(isCharging == true)
         {
-            angle += turnRate;
-            transform.eulerAngles = new Vector3(0f, 0f, angle);
+            angle -= steeringInput * turnRate * turnMultCharge;
         }
-        if (right)
+        else
         {
-            angle -= turnRate;
-            transform.eulerAngles = new Vector3(0f, 0f, angle);
+            angle -= steeringInput * turnRate * turnMult;
         }
+
+        
+        rb.MoveRotation(angle);
+        inputVector.x = Input.GetAxis("Horizontal");
+        SetInputVector(inputVector);
+    }
+    public void SetInputVector(Vector2 inputVector)
+    {
+        steeringInput = inputVector.x;
+    }
+
+    void killSideForce ()
+    {
+        Vector2 forwardVelocity = transform.up * Vector2.Dot(rb.linearVelocity , transform.up);
+        Vector2 rightVelocity = transform.right * Vector2.Dot(rb.linearVelocity , transform.right);
+        rb.linearVelocity = forwardVelocity + rightVelocity * driftFactor;
     }
     void HandleChargeInput()
     {
