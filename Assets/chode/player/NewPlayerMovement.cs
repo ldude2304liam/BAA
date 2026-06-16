@@ -7,7 +7,11 @@ public class NewPlayerMovement : MonoBehaviour
     //
     [Header("Speed Settings")]
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
-    public float acceleration = 0.6f;
+  /*   public float acceleration = 0.6f; */
+  ////different accelerations
+    public float accelerationStage0 = 2.0f;
+    public float accelerationStage1 = 0.6f;
+    public float accelerationStage2 = 0.6f;
 
     [Tooltip("triggers Boost 1")]
     public static float boost1Threshold = 8.5f;
@@ -31,6 +35,15 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("how much speed is taken per frame while charging")]
     public float chargeDrainRate = 0.05f;
+
+    public float chargeMultiplierStage1 = 1.5f;
+    public float chargeMultiplierStage2 = 2.5f;
+
+//////////test
+    private float chargeBurst = 0f; // temporary overlay, does NOT affect base speed
+
+   //how fast the charge burst fades after release
+    public float burstDecay = 8f;
 
 
     //  TURNING a
@@ -56,13 +69,14 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("Colour after you hit enemy")]
     public Color colorEnemy = Color.blue;
 
+    public float enemyFlashDuration = 0.2f;
+
    
     // currentStage: 0 = normal, 1 = after boost 1, 2 = after boost 2
     private int currentStage = 0;
 
     public static float speed = 1f;
     private float chargeSpeed = 0f;
-    //private float chargeSpeed2 = 100f;
     private bool isCharging = false;
     private bool boostPending = false; //coroutine only fires once per threshold ( does not repeat every frame)
 
@@ -87,6 +101,17 @@ public class NewPlayerMovement : MonoBehaviour
         }
     }
 
+    ///accelerator
+    private float AccelerationForStage()
+{
+    switch (currentStage)
+    {
+        case 0: return accelerationStage0;
+        case 1: return accelerationStage1;
+        default: return accelerationStage2;
+    }
+}
+
     void Start()
     {
         ApplyStageColor();
@@ -109,13 +134,18 @@ public class NewPlayerMovement : MonoBehaviour
         if (!isCharging)
         {
             float target = TargetSpeedForStage();
-            speed = Mathf.MoveTowards(speed, target, acceleration * Time.fixedDeltaTime);
+            float accel = AccelerationForStage();  ///try acceleration stages
+            speed = Mathf.MoveTowards(speed, target, accel * Time.fixedDeltaTime);
         }
+         // Burst fades independently, never touches base speed
+        if (chargeBurst > 0f)
+        chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
 
     void MoveForward()
     {
-        transform.position += transform.up * speed * Time.deltaTime;
+ /*        transform.position += transform.up * speed * Time.deltaTime; */
+         transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
     }
     /// <summary>
     /// /////////////////
@@ -153,35 +183,29 @@ public class NewPlayerMovement : MonoBehaviour
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f; 
 
-  /*           // Drain current speed while charging 
+            // Drain current speed while charging 
             if (speed >= stageFloor[currentStage] + 0.1f)
                 speed -= chargeDrainRate;
             //if (speed >= stageFloor[0] + 0.1f && speed <= stageFloor[1] +0.1f )
                // speed -= chargeDrainRate * 2 ;
             if (speed >= stageFloor[1] + 0.1f )
-                speed -= chargeDrainRate * 2f ; */
-                            // Drain speed while charging — exclusive per stage so they never stack
-            float drain = chargeDrainRate;          
-            if (currentStage == 1) drain *= 3f;     
-            if (currentStage == 2) drain *= 3f;   
- 
-            if (speed >= stageFloor[currentStage] + 0.2f)
-                speed -= drain;
+                speed -= chargeDrainRate * 2f ;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
-            if(speed >= boost2Threshold)
-            {
-                speed = Mathf.Min(speed + 40 );
-            }
-            else
-            {
-                speed = Mathf.Min(speed + chargeSpeed, maxSpeed);
-            }
-            
-            chargeSpeed = 0f;
+            // Scale the charge bonus based on current stage
+            float stageMultiplier = 1f;
+            if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
+            if (currentStage == 2) stageMultiplier = chargeMultiplierStage2;
+
+
+                chargeBurst = chargeSpeed * stageMultiplier; // separate from speed
+                chargeSpeed = 0f;
+
+/*             speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
+            chargeSpeed = 0f; */
         }
     }
 
@@ -209,12 +233,7 @@ public class NewPlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //dramatic pause
 
         currentStage = newStage;
-     
-        
-        
-        speed += boostSpeedBonus;    
-        
-        //speed += boostSpeedBonus;              // jump forward
+        speed += boostSpeedBonus;              // jump forward
         boostPending = false;
 
         ApplyStageColor();
@@ -244,16 +263,12 @@ public class NewPlayerMovement : MonoBehaviour
     public void HitGuy()
     {
         if (spriteRenderer == null) return;
-        {
-            spriteRenderer.color = colorEnemy; 
-            boostPending = true;
-            
-            StartCoroutine(TriggerEnemyBoost());
-            StartCoroutine(GameFeelPause());
+ 
+        boostPending = true;
 
-            
-
-        }
+        StartCoroutine(TriggerEnemyBoost());
+        StartCoroutine(EnemyColorFlash());
+        StartCoroutine(GameFeelPause());
         
     }
     IEnumerator TriggerEnemyBoost()
@@ -274,6 +289,12 @@ public class NewPlayerMovement : MonoBehaviour
         Time.timeScale = 1f;
     }
  
+    IEnumerator EnemyColorFlash()
+    {
+        spriteRenderer.color = colorEnemy;         // flash whatever
+        yield return new WaitForSeconds(enemyFlashDuration); // wait
+        ApplyStageColor();                         // back tot he stage color
+    }
 
     void OnCollisionEnter2D(Collision2D col)
      {
