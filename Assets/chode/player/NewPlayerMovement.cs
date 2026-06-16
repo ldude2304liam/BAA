@@ -9,8 +9,8 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
   /*   public float acceleration = 0.6f; */
   ////different accelerations
-    public float accelerationStage0 = 2.0f;
-    public float accelerationStage1 = 0.6f;
+    public float accelerationStage0 = 3.0f;
+    public float accelerationStage1 = 0.8f;
     public float accelerationStage2 = 0.6f;
 
     [Tooltip("triggers Boost 1")]
@@ -190,11 +190,14 @@ public class NewPlayerMovement : MonoBehaviour
                // speed -= chargeDrainRate * 2 ;
             if (speed >= stageFloor[1] + 0.1f )
                 speed -= chargeDrainRate * 2f ;
+       
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
+    
+            
             // Scale the charge bonus based on current stage
             float stageMultiplier = 1f;
             if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
@@ -202,8 +205,24 @@ public class NewPlayerMovement : MonoBehaviour
 
 
                 chargeBurst = chargeSpeed * stageMultiplier; // separate from speed
+            if(chargeSpeed >=15 )
+            {
+               speed = speed + 2; 
+            }
                 chargeSpeed = 0f;
+            if(currentStage == 0)
+            {
+                speed = speed +5f;
+            }
+               
+            
+                
+            
+   
+      
 
+            
+            
 /*             speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
             chargeSpeed = 0f; */
         }

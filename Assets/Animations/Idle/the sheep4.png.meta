@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 86845d265c498b749a56b53d204183b3
+guid: 695e2030b60532d439b7cba1efe9666c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7589142301803305682
-    second: sheep5_0
+      213: -625542400357848040
+    second: the sheep4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 135
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sheep5_0
+      name: the sheep4_0
       rect:
         serializedVersion: 2
-        x: 34
-        y: 19
-        width: 247
-        height: 287
+        x: 49
+        y: 64
+        width: 207
+        height: 212
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2da50e8e6bc025960800000000000000
-      internalID: 7589142301803305682
+      spriteID: 81ca9ba4080a157f0800000000000000
+      internalID: -625542400357848040
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      sheep5_0: 7589142301803305682
+      the sheep4_0: -625542400357848040
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
