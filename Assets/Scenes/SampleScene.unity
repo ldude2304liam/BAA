@@ -1358,6 +1358,7 @@ GameObject:
   - component: {fileID: 1432154189}
   - component: {fileID: 1432154193}
   - component: {fileID: 1432154194}
+  - component: {fileID: 1432154195}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1550,6 +1551,7 @@ MonoBehaviour:
   colorStage2: {r: 1, g: 0, b: 0, a: 1}
   colorEnemy: {r: 0, g: 0, b: 1, a: 1}
   enemyFlashDuration: 0.2
+  driftFactor: 0.95
 --- !u!95 &1432154194
 Animator:
   serializedVersion: 7
@@ -1572,6 +1574,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1432154195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432154188}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7543c2831c7c3d140ada453ae72c93ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 50
+  MaxSpeed: 15
+  Drag: 0.98
+  SteerAngle: 20
+  Traction: 1
 --- !u!1 &1496561125
 GameObject:
   m_ObjectHideFlags: 0
@@ -7117,6 +7136,7 @@ GameObject:
   - component: {fileID: 2082119261}
   - component: {fileID: 2082119263}
   - component: {fileID: 2082119264}
+  - component: {fileID: 2082119265}
   m_Layer: 3
   m_Name: enemy
   m_TagString: Enemy
@@ -7252,6 +7272,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee757a534edcc3e40b69b42ffa1f5958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!50 &2082119265
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082119260}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
