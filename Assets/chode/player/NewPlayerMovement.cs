@@ -7,6 +7,10 @@ public class NewPlayerMovement : MonoBehaviour
     //
     [Header("Components")]
     Rigidbody2D rb; 
+
+    [Header("UI")]
+
+
     [Header("Speed Settings")]
     [Tooltip("How fast speed naturally climbs toward the next threshold")]
   /*   public float acceleration = 0.6f; */
@@ -14,6 +18,8 @@ public class NewPlayerMovement : MonoBehaviour
     public float accelerationStage0 = 3.0f;
     public float accelerationStage1 = 0.8f;
     public float accelerationStage2 = 0.6f;
+
+
 
     [Tooltip("triggers Boost 1")]
     public static float boost1Threshold = 8.5f;
@@ -130,6 +136,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Start()
     {
+       
         ApplyStageColor();
     }
 
@@ -163,6 +170,8 @@ public class NewPlayerMovement : MonoBehaviour
         chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
 
+
+
     void MoveForward()
     {
         //Vector2 forceVector = transform.up * speed * chargeBurst;
@@ -176,6 +185,7 @@ public class NewPlayerMovement : MonoBehaviour
     void controls()
     {
         if (Input.GetKeyDown(KeyCode.A)) left = true;
+     
         if (Input.GetKeyUp(KeyCode.A))  left = false;
         if (Input.GetKeyDown(KeyCode.D)) right = true;
         if (Input.GetKeyUp(KeyCode.D))  right = false;
