@@ -199,6 +199,7 @@ public class NewPlayerMovement : MonoBehaviour
     
             
             // Scale the charge bonus based on current stage
+            // Scale based on current stage
             float stageMultiplier = 1f;
             if (currentStage == 1) stageMultiplier = chargeMultiplierStage1;
             if (currentStage == 2) stageMultiplier = chargeMultiplierStage2;
@@ -225,6 +226,8 @@ public class NewPlayerMovement : MonoBehaviour
             
 /*             speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
             chargeSpeed = 0f; */
+            speed = Mathf.Min(speed + (chargeSpeed * stageMultiplier), maxSpeed);
+            chargeSpeed = 0f;
         }
     }
 
