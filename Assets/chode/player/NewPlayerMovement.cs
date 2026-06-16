@@ -5,6 +5,10 @@ public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D rb;
+    Rigidbody2D rb; 
+
+    [Header("UI")]
+
 
     [Header("Speed Settings")]
     [Tooltip("Acceleration while in Stage 0")]
@@ -15,6 +19,9 @@ public class NewPlayerMovement : MonoBehaviour
     public float accelerationStage2 = 0.6f;
 
     [Tooltip("Triggers Boost 1")]
+
+
+    [Tooltip("triggers Boost 1")]
     public static float boost1Threshold = 8.5f;
 
     [Tooltip("Triggers Boost 2")]
@@ -108,6 +115,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Start()
     {
+       
         ApplyStageColor();
     }
 
@@ -138,6 +146,8 @@ public class NewPlayerMovement : MonoBehaviour
             chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
 
+
+
     void MoveForward()
     {
         transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
@@ -148,6 +158,31 @@ public class NewPlayerMovement : MonoBehaviour
         steeringInput = Input.GetAxis("Horizontal");
 
         if (isCharging)
+        if (Input.GetKeyDown(KeyCode.A)) left = true;
+     
+        if (Input.GetKeyUp(KeyCode.A))  left = false;
+        if (Input.GetKeyDown(KeyCode.D)) right = true;
+        if (Input.GetKeyUp(KeyCode.D))  right = false;
+
+        float steerInput = Input.GetAxis("Horizontal");
+        transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
+        Vector2 inputVector = Vector2.zero;
+
+        
+        
+
+
+        // if (left)
+        // {
+        //     angle += turnRate;
+        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
+        // }
+        // if (right)      
+        // {
+        //     angle -= turnRate;
+        //     transform.eulerAngles = new Vector3(0f, 0f, angle);
+        // }
+        if(isCharging == true)
         {
             float speedFactor = Mathf.Lerp(1f, 0.2f, speed / maxSpeed); // reduces turning as speed increases during charging
             angle -= steeringInput * turnRate * turnMultCharge * speedFactor;
