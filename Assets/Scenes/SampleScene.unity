@@ -1532,11 +1532,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 0.75
   boost2Threshold: 25
-  maxSpeed: 33.6
+  maxSpeed: 40.7
   boostSpeedBonus: 5.5
   maxChargeSpeed: 15
   chargeRate: 1
   chargeDrainRate: 4.6
+  chargeMultiplierStage1: 1.5
+  chargeMultiplierStage2: 10
   turnRate: 0.6
   boostParticles: {fileID: 1666228788}
   spriteRenderer: {fileID: 1432154191}
