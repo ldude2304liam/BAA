@@ -5,7 +5,7 @@ public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D rb;
-    Rigidbody2D rb; 
+    //Rigidbody2D rb; 
 
     [Header("UI")]
 
@@ -21,7 +21,7 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("Triggers Boost 1")]
 
 
-    [Tooltip("triggers Boost 1")]
+   //[Tooltip("triggers Boost 1")]
     public static float boost1Threshold = 8.5f;
 
     [Tooltip("Triggers Boost 2")]
@@ -80,6 +80,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private float angle = 0f;
     private float steeringInput = 0f;
+    private Vector3 MoveForce; 
 
     // Speed floor for each stage (so demotion lands here, not at 0)
     private float[] stageFloor = { 1f, 25f, 30f };
@@ -157,12 +158,12 @@ public class NewPlayerMovement : MonoBehaviour
     {
         steeringInput = Input.GetAxis("Horizontal");
 
-        if (isCharging)
-        if (Input.GetKeyDown(KeyCode.A)) left = true;
+        //if (isCharging)
+        // if (Input.GetKeyDown(KeyCode.A)) left = true;
      
-        if (Input.GetKeyUp(KeyCode.A))  left = false;
-        if (Input.GetKeyDown(KeyCode.D)) right = true;
-        if (Input.GetKeyUp(KeyCode.D))  right = false;
+        // if (Input.GetKeyUp(KeyCode.A))  left = false;
+        // if (Input.GetKeyDown(KeyCode.D)) right = true;
+        // if (Input.GetKeyUp(KeyCode.D))  right = false;
 
         float steerInput = Input.GetAxis("Horizontal");
         transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
