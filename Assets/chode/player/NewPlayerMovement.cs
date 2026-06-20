@@ -51,7 +51,7 @@ public class NewPlayerMovement : MonoBehaviour
     [Header("Turning Settings")]
     public float turnRate = 50f;
     public float turnMultCharge = 10f;
-    public float turnMult = 5f;
+    public float turnMult = 6f;
 
     [Header("Feedback")]
     [SerializeField] private ParticleSystem boostParticles;
@@ -158,13 +158,6 @@ public class NewPlayerMovement : MonoBehaviour
     {
         steeringInput = Input.GetAxis("Horizontal");
 
-        //if (isCharging)
-        // if (Input.GetKeyDown(KeyCode.A)) left = true;
-     
-        // if (Input.GetKeyUp(KeyCode.A))  left = false;
-        // if (Input.GetKeyDown(KeyCode.D)) right = true;
-        // if (Input.GetKeyUp(KeyCode.D))  right = false;
-
         float steerInput = Input.GetAxis("Horizontal");
         transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
         Vector2 inputVector = Vector2.zero;
@@ -185,7 +178,7 @@ public class NewPlayerMovement : MonoBehaviour
         // }
         if(isCharging == true)
         {
-            float speedFactor = Mathf.Lerp(1f, 0.2f, speed / maxSpeed); // reduces turning as speed increases during charging
+            float speedFactor = Mathf.Lerp(1f, 0.35f, speed / maxSpeed); // reduces turning as speed increases during charging
             angle -= steeringInput * turnRate * turnMultCharge * speedFactor;
 
         }

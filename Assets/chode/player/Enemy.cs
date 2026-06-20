@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         //transform.position += transform.up * (10 + 2) * Time.deltaTime;
-        transform.Rotate (0f, 360f, 0f);
+        transform.Rotate (30f, 360f, 30f);
     }
     void OnCollisionEnter2D(Collision2D col)
     {
