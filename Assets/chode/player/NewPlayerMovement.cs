@@ -22,7 +22,7 @@ public class NewPlayerMovement : MonoBehaviour
 
 
    //[Tooltip("triggers Boost 1")]
-    public static float boost1Threshold = 8.5f;
+   public float boost1Threshold = 8.5f;
 
     [Tooltip("Triggers Boost 2")]
     public float boost2Threshold = 25f;
@@ -32,7 +32,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("Flat speed added when a boost fires")]
     public float boostSpeedBonus = 5.5f;
-
+/// <summary>
+/// ///////////////////////////////////////
+/// </summary>
     [Header("Charge Settings")]
     public float maxChargeSpeed = 15f;
 
@@ -47,6 +49,15 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("How fast the charge burst fades after release")]
     public float burstDecay = 8f;
+
+    [Header("breaking")]
+    public float maxChargeHoldTime = 3f;
+    public float chargeHoldTimer = 0f;
+    public float overheatBrakeRate = 12f; // slow decrease
+
+    
+
+
 
     [Header("Turning Settings")]
     public float turnRate = 50f;
@@ -75,7 +86,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private float chargeSpeed = 0f;
     private float chargeBurst = 0f; // temporary overlay, does NOT affect base speed
-    private bool isCharging = false;
+    public bool isCharging = false;
     private bool boostPending = false; // coroutine only fires once per threshold
 
     private float angle = 0f;
@@ -209,6 +220,8 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (isCharging)
         {
+            chargeHoldTimer += Time.deltaTime;
+
             // Build up the charge
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f;
@@ -219,11 +232,34 @@ public class NewPlayerMovement : MonoBehaviour
 
             if (speed >= stageFloor[1] + 0.1f)
                 speed -= chargeDrainRate * 2f;
+
+
+             if (chargeHoldTimer >= maxChargeHoldTime)
+            {
+                speed = Mathf.MoveTowards(speed, 0f, overheatBrakeRate * Time.deltaTime);
+                chargeSpeed = 0f;  // loose charge 
+                chargeBurst = 0f;  // and if any burst it cancels (not sure if i want to)
+            }       
+
+            // checks stage if speed drops below the threshold 
+            if (currentStage == 2 && speed < boost2Threshold)
+            {
+                currentStage = 1;
+                boostPending = false;
+                ApplyStageColor();
+            }
+            if (currentStage == 1 && speed < boost1Threshold)
+            {
+                currentStage = 0;
+                boostPending = false;
+                ApplyStageColor();
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
+            chargeHoldTimer = 0f;
 
             // Scale the charge bonus based on current stage
             float stageMultiplier = 1f;

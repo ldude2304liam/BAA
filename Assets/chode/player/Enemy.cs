@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private NewPlayerMovement player;
+
     void Start()
     {
-        GetComponent<NewPlayerMovement>();
+        player = FindFirstObjectByType<NewPlayerMovement>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //transform.position += transform.up * (10 + 2) * Time.deltaTime;
-        transform.Rotate (30f, 360f, 30f);
+        transform.Rotate(30f, 360f, 30f);
     }
+
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.CompareTag("Player")&& NewPlayerMovement.speed >= NewPlayerMovement.boost1Threshold)
+        if (col.gameObject.CompareTag("Player") && NewPlayerMovement.speed >= player.boost1Threshold)
         {
             Destroy(gameObject);
         }
@@ -25,5 +25,4 @@ public class Enemy : MonoBehaviour
             transform.eulerAngles = new Vector3(100f, 50f, -200f);
         }
     }
-    
 }
