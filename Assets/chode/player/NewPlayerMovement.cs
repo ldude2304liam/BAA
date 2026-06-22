@@ -32,6 +32,12 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("Flat speed added when a boost fires")]
     public float boostSpeedBonus = 5.5f;
+
+
+   /// <summary>
+   /// //////////bouncing
+   /// </summary>
+    //public float bounceSpeedBonus = 4f;
 /// <summary>
 /// ///////////////////////////////////////
 /// </summary>
@@ -142,8 +148,8 @@ public class NewPlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         controls();
-        killSideForce();
         MoveForward();
+        killSideForce();
 
         // Auto-climb speed toward the current stage's ceiling (when not charging)
         if (!isCharging)
@@ -162,7 +168,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void MoveForward()
     {
-        transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
+        //transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
+        rb.linearVelocity = (Vector2)transform.up * (speed + chargeBurst);
+        
     }
 
     void controls()
@@ -170,7 +178,6 @@ public class NewPlayerMovement : MonoBehaviour
         steeringInput = Input.GetAxis("Horizontal");
 
         float steerInput = Input.GetAxis("Horizontal");
-        transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
         Vector2 inputVector = Vector2.zero;
 
         
@@ -365,9 +372,37 @@ public class NewPlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Obstacle"))
-            TakeHit();
+        {
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                Bounce(col);
+            else
+                TakeHit();
+        }
         if (col.gameObject.CompareTag("Enemy") && speed >= boost1Threshold)
             HitGuy();
+    }
+
+    void Bounce(Collision2D col)
+    {
+        // Get the wall's surface normal (the direction pointing away from the wall)
+        Vector2 wallNormal = col.contacts[0].normal;
+
+        //direction off that normal of the wall
+        Vector2 currentDirection = transform.up;
+        Vector2 reflectedDirection = Vector2.Reflect(transform.up, wallNormal);
+
+        // Convert the reflected direction back into a Z angle for MoveRotation
+        angle = Mathf.Atan2(reflectedDirection.x, reflectedDirection.y) * Mathf.Rad2Deg * -1f;
+        rb.MoveRotation(angle);
+        rb.linearVelocity = Vector2.zero;
+
+            // Small speed bonus for pulling it off
+         ///speed = Mathf.Min(speed + bounceSpeedBonus, maxSpeed);
+        ///rb.linearVelocity = Vector2.zero;
+        //transform.position += (Vector3)(wallNormal * 0.3f);
+
+
+
     }
 
     void ApplyStageColor()
