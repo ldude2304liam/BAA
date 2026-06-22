@@ -35,9 +35,15 @@ public class NewPlayerMovement : MonoBehaviour
 
 
    /// <summary>
-   /// //////////bouncing
+     [Header("bouncing")]
+
    /// </summary>
+   [Tooltip("How many seconds after pressing Control the bounce is still valid")]
+    public float bounceInputWindow = 0.15f;
+    private float lastControlPressTime = -999f;
     //public float bounceSpeedBonus = 4f;
+    private bool justBounced = false;
+
 /// <summary>
 /// ///////////////////////////////////////
 /// </summary>
@@ -139,6 +145,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+        lastControlPressTime = Time.time;
+
         HandleChargeInput();
         CheckBoostTrigger();
 
@@ -147,11 +156,14 @@ public class NewPlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+       
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+            lastControlPressTime = Time.time;
+
         controls();
         MoveForward();
         killSideForce();
 
-        // Auto-climb speed toward the current stage's ceiling (when not charging)
         if (!isCharging)
         {
             float target = TargetSpeedForStage();
@@ -159,7 +171,6 @@ public class NewPlayerMovement : MonoBehaviour
             speed = Mathf.MoveTowards(speed, target, accel * Time.fixedDeltaTime);
         }
 
-        // Burst fades independently, never touches base speed
         if (chargeBurst > 0f)
             chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
@@ -320,12 +331,20 @@ public class NewPlayerMovement : MonoBehaviour
 
     public void TakeHit()
     {
-        if (currentStage == 0) return; // already at base, nothing to lose
+      /*   if (currentStage == 0) return; // already at base, nothing to lose */
 
-        currentStage = 0;
+/*         currentStage = 0;
         speed = stageFloor[currentStage];
         boostPending = false;
+        StopAllCoroutines(); */
         StopAllCoroutines();
+        boostPending = false;
+
+        currentStage = 0;
+        speed = stageFloor[0];
+        chargeBurst = 0f;   // kill any active burst too
+        chargeSpeed = 0f;   // kill any building charge
+
 
         ApplyStageColor();
 
@@ -373,8 +392,13 @@ public class NewPlayerMovement : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Obstacle"))
         {
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            bool withinWindow = (Time.time - lastControlPressTime) <= bounceInputWindow;
+
+            if (withinWindow )
+            {
+                lastControlPressTime = -999f;
                 Bounce(col);
+            }
             else
                 TakeHit();
         }
@@ -382,19 +406,39 @@ public class NewPlayerMovement : MonoBehaviour
             HitGuy();
     }
 
+    // fires every  frame while still touching the wall
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Obstacle") && !justBounced )
+        {
+            speed = stageFloor[0];
+            chargeBurst = 0f;
+            chargeSpeed = 0f;
+
+            if (currentStage != 0)
+            {
+                currentStage = 0;
+                boostPending = false;
+                StopAllCoroutines();
+                ApplyStageColor();
+            }
+        }
+    }
+
     void Bounce(Collision2D col)
     {
-        // Get the wall's surface normal (the direction pointing away from the wall)
+        //the direction pointing away from the wall
         Vector2 wallNormal = col.contacts[0].normal;
 
         //direction off that normal of the wall
         Vector2 currentDirection = transform.up;
         Vector2 reflectedDirection = Vector2.Reflect(transform.up, wallNormal);
 
-        // Convert the reflected direction back into a Z angle for MoveRotation
+        // convert the reflected direction back into an angle
         angle = Mathf.Atan2(reflectedDirection.x, reflectedDirection.y) * Mathf.Rad2Deg * -1f;
         rb.MoveRotation(angle);
         rb.linearVelocity = Vector2.zero;
+        justBounced = true; 
 
             // Small speed bonus for pulling it off
          ///speed = Mathf.Min(speed + bounceSpeedBonus, maxSpeed);
@@ -404,6 +448,11 @@ public class NewPlayerMovement : MonoBehaviour
 
 
     }
+    void OnCollisionExit2D(Collision2D col)
+{
+    if (col.gameObject.CompareTag("Obstacle"))
+        justBounced = false; // clear flag once fully separated from wall
+}
 
     void ApplyStageColor()
     {
