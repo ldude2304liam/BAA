@@ -397,7 +397,7 @@ public class NewPlayerMovement : MonoBehaviour
             if (withinWindow )
             {
                 lastControlPressTime = -999f;
-                Bounce(col);
+                Bounce(col); 
             }
             else
                 TakeHit();
@@ -437,8 +437,10 @@ public class NewPlayerMovement : MonoBehaviour
         // convert the reflected direction back into an angle
         angle = Mathf.Atan2(reflectedDirection.x, reflectedDirection.y) * Mathf.Rad2Deg * -1f;
         rb.MoveRotation(angle);
+        chargeBurst = 20;
         rb.linearVelocity = Vector2.zero;
         justBounced = true; 
+       
 
             // Small speed bonus for pulling it off
          ///speed = Mathf.Min(speed + bounceSpeedBonus, maxSpeed);
