@@ -5,6 +5,8 @@ public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D rb;
+
+    [SerializeField] private Animator anim;
     //Rigidbody2D rb; 
 
     [Header("UI")]
@@ -305,13 +307,22 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (currentStage == 0 && speed >= boost1Threshold)
         {
+            anim.SetBool("IsFirstBoost" , true);
             boostPending = true;
             StartCoroutine(TriggerBoost(1));
         }
         else if (currentStage == 1 && speed >= boost2Threshold)
         {
+            anim.SetBool("IsFirstBoost" , false);
+            anim.SetBool("IsSecondBoost" , true);
             boostPending = true;
             StartCoroutine(TriggerBoost(2));
+        }
+        else if (currentStage == 0)
+        {
+            anim.SetBool("IsFirstBoost" , false);
+            anim.SetBool("IsSecondBoost" , false);
+            
         }
     }
 
