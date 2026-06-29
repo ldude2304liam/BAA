@@ -66,6 +66,7 @@ public class Enemy : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player") && NewPlayerMovement.speed >= player.boost1Threshold)
         {
+            FMODUnity.RuntimeManager.PlayOneShot("event:/PIGDEAD");
             Destroy(gameObject);
         }
         var speed = lastVelocity.magnitude;
