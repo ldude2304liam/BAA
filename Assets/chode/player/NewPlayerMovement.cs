@@ -5,6 +5,8 @@ public class NewPlayerMovement : MonoBehaviour
 {
     [Header("Components")]
     private Rigidbody2D rb;
+
+    [SerializeField] private Animator anim;
     //Rigidbody2D rb; 
 
     [Header("UI")]
@@ -22,7 +24,7 @@ public class NewPlayerMovement : MonoBehaviour
 
 
    //[Tooltip("triggers Boost 1")]
-    public static float boost1Threshold = 8.5f;
+   public float boost1Threshold = 8.5f;
 
     [Tooltip("Triggers Boost 2")]
     public float boost2Threshold = 25f;
@@ -33,6 +35,20 @@ public class NewPlayerMovement : MonoBehaviour
     [Tooltip("Flat speed added when a boost fires")]
     public float boostSpeedBonus = 5.5f;
 
+
+   /// <summary>
+     [Header("bouncing")]
+
+   /// </summary>
+   [Tooltip("How many seconds after pressing Control the bounce is still valid")]
+    public float bounceInputWindow = 0.15f;
+    private float lastControlPressTime = -999f;
+    //public float bounceSpeedBonus = 4f;
+    private bool justBounced = false;
+
+/// <summary>
+/// ///////////////////////////////////////
+/// </summary>
     [Header("Charge Settings")]
     public float maxChargeSpeed = 15f;
 
@@ -47,6 +63,15 @@ public class NewPlayerMovement : MonoBehaviour
 
     [Tooltip("How fast the charge burst fades after release")]
     public float burstDecay = 8f;
+
+    [Header("breaking")]
+    public float maxChargeHoldTime = 3f;
+    public float chargeHoldTimer = 0f;
+    public float overheatBrakeRate = 12f; // slow decrease
+
+    
+
+
 
     [Header("Turning Settings")]
     public float turnRate = 50f;
@@ -75,7 +100,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private float chargeSpeed = 0f;
     private float chargeBurst = 0f; // temporary overlay, does NOT affect base speed
-    private bool isCharging = false;
+    public bool isCharging = false;
     private bool boostPending = false; // coroutine only fires once per threshold
 
     private float angle = 0f;
@@ -122,6 +147,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+        lastControlPressTime = Time.time;
+
         HandleChargeInput();
         CheckBoostTrigger();
 
@@ -130,11 +158,14 @@ public class NewPlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        controls();
-        killSideForce();
-        MoveForward();
+       
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+            lastControlPressTime = Time.time;
 
-        // Auto-climb speed toward the current stage's ceiling (when not charging)
+        controls();
+        MoveForward();
+        killSideForce();
+
         if (!isCharging)
         {
             float target = TargetSpeedForStage();
@@ -142,7 +173,6 @@ public class NewPlayerMovement : MonoBehaviour
             speed = Mathf.MoveTowards(speed, target, accel * Time.fixedDeltaTime);
         }
 
-        // Burst fades independently, never touches base speed
         if (chargeBurst > 0f)
             chargeBurst = Mathf.MoveTowards(chargeBurst, 0f, burstDecay * Time.fixedDeltaTime);
     }
@@ -151,7 +181,9 @@ public class NewPlayerMovement : MonoBehaviour
 
     void MoveForward()
     {
-        transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
+        //transform.position += transform.up * (speed + chargeBurst) * Time.deltaTime;
+        rb.linearVelocity = (Vector2)transform.up * (speed + chargeBurst);
+        
     }
 
     void controls()
@@ -159,7 +191,6 @@ public class NewPlayerMovement : MonoBehaviour
         steeringInput = Input.GetAxis("Horizontal");
 
         float steerInput = Input.GetAxis("Horizontal");
-        transform.Rotate(Vector3.up * steerInput * MoveForce.magnitude * turnRate * Time.deltaTime);
         Vector2 inputVector = Vector2.zero;
 
         
@@ -209,6 +240,8 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (isCharging)
         {
+            chargeHoldTimer += Time.deltaTime;
+
             // Build up the charge
             if (chargeSpeed < maxChargeSpeed)
                 chargeSpeed += chargeRate * Time.deltaTime * 60f;
@@ -219,11 +252,34 @@ public class NewPlayerMovement : MonoBehaviour
 
             if (speed >= stageFloor[1] + 0.1f)
                 speed -= chargeDrainRate * 2f;
+
+
+             if (chargeHoldTimer >= maxChargeHoldTime)
+            {
+                speed = Mathf.MoveTowards(speed, 0f, overheatBrakeRate * Time.deltaTime);
+                chargeSpeed = 0f;  // loose charge 
+                chargeBurst = 0f;  // and if any burst it cancels (not sure if i want to)
+            }       
+
+            // checks stage if speed drops below the threshold 
+            if (currentStage == 2 && speed < boost2Threshold)
+            {
+                currentStage = 1;
+                boostPending = false;
+                ApplyStageColor();
+            }
+            if (currentStage == 1 && speed < boost1Threshold)
+            {
+                currentStage = 0;
+                boostPending = false;
+                ApplyStageColor();
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isCharging)
         {
             isCharging = false;
+            chargeHoldTimer = 0f;
 
             // Scale the charge bonus based on current stage
             float stageMultiplier = 1f;
@@ -251,13 +307,22 @@ public class NewPlayerMovement : MonoBehaviour
 
         if (currentStage == 0 && speed >= boost1Threshold)
         {
+            anim.SetBool("IsFirstBoost" , true);
             boostPending = true;
             StartCoroutine(TriggerBoost(1));
         }
         else if (currentStage == 1 && speed >= boost2Threshold)
         {
+            anim.SetBool("IsFirstBoost" , false);
+            anim.SetBool("IsSecondBoost" , true);
             boostPending = true;
             StartCoroutine(TriggerBoost(2));
+        }
+        else if (currentStage == 0)
+        {
+            anim.SetBool("IsFirstBoost" , false);
+            anim.SetBool("IsSecondBoost" , false);
+            
         }
     }
 
@@ -277,12 +342,20 @@ public class NewPlayerMovement : MonoBehaviour
 
     public void TakeHit()
     {
-        if (currentStage == 0) return; // already at base, nothing to lose
+      /*   if (currentStage == 0) return; // already at base, nothing to lose */
 
-        currentStage = 0;
+/*         currentStage = 0;
         speed = stageFloor[currentStage];
         boostPending = false;
+        StopAllCoroutines(); */
         StopAllCoroutines();
+        boostPending = false;
+
+        currentStage = 0;
+        speed = stageFloor[0];
+        chargeBurst = 0f;   // kill any active burst too
+        chargeSpeed = 0f;   // kill any building charge
+
 
         ApplyStageColor();
 
@@ -329,10 +402,70 @@ public class NewPlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Obstacle"))
-            TakeHit();
+        {
+            bool withinWindow = (Time.time - lastControlPressTime) <= bounceInputWindow;
+
+            if (withinWindow )
+            {
+                lastControlPressTime = -999f;
+                Bounce(col); 
+            }
+            else
+                TakeHit();
+        }
         if (col.gameObject.CompareTag("Enemy") && speed >= boost1Threshold)
             HitGuy();
     }
+
+    // fires every  frame while still touching the wall
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Obstacle") && !justBounced )
+        {
+            speed = stageFloor[0];
+            chargeBurst = 0f;
+            chargeSpeed = 0f;
+
+            if (currentStage != 0)
+            {
+                currentStage = 0;
+                boostPending = false;
+                StopAllCoroutines();
+                ApplyStageColor();
+            }
+        }
+    }
+
+    void Bounce(Collision2D col)
+    {
+        //the direction pointing away from the wall
+        Vector2 wallNormal = col.contacts[0].normal;
+
+        //direction off that normal of the wall
+        Vector2 currentDirection = transform.up;
+        Vector2 reflectedDirection = Vector2.Reflect(transform.up, wallNormal);
+
+        // convert the reflected direction back into an angle
+        angle = Mathf.Atan2(reflectedDirection.x, reflectedDirection.y) * Mathf.Rad2Deg * -1f;
+        rb.MoveRotation(angle);
+        chargeBurst = 20;
+        rb.linearVelocity = Vector2.zero;
+        justBounced = true; 
+       
+
+            // Small speed bonus for pulling it off
+         ///speed = Mathf.Min(speed + bounceSpeedBonus, maxSpeed);
+        ///rb.linearVelocity = Vector2.zero;
+        //transform.position += (Vector3)(wallNormal * 0.3f);
+
+
+
+    }
+    void OnCollisionExit2D(Collision2D col)
+{
+    if (col.gameObject.CompareTag("Obstacle"))
+        justBounced = false; // clear flag once fully separated from wall
+}
 
     void ApplyStageColor()
     {

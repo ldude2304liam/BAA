@@ -1,35 +1,64 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 public class SpeedBar : MonoBehaviour
 {
-
     private Slider slider;
-    private float targetProgress = 0;
-    public float fillSpeed = 20f;
+    private NewPlayerMovement player;
+    private Image fillImage;
+    private Color originalColor;
+
+    //only in the last stage
+    public float blinkSpeed = 6f;
+
+    public Color warningColor = Color.yellow;
+
+    public Color dangerColor = Color.white;
+    public Color holdingColor = Color.red;
 
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Awake()
-    {
-        slider = gameObject.GetComponent<Slider>();
-    }
-    
     void Start()
     {
-        GetComponent<NewPlayerMovement>();
-        Progress(0.75f);
+        slider = GetComponent<Slider>();
+        player = FindFirstObjectByType<NewPlayerMovement>();
+
+        slider.minValue = 0f;
+        slider.maxValue = player.maxSpeed;
+
+        fillImage = slider.fillRect.GetComponent<Image>();
+        originalColor = fillImage.color; 
     }
 
-    // Update is called once per frame
     void Update()
-    {
-        slider.value = NewPlayerMovement.speed ;
-    }
+    { //// 1 is MaxChargeHoldTime 
+        slider.value = NewPlayerMovement.speed;
 
-    public void Progress(float newProgress)
-    {
-        targetProgress = slider.value += newProgress;
+        if (player.isCharging)
+        {
+            float held = player.chargeHoldTimer;
+            float limit = player.maxChargeHoldTime;
+
+            if (held < limit * 0.33f)
+            {
+                //safe, normal color, no blink
+                fillImage.color = holdingColor;
+            }
+            else if (held < limit * 0.66f)
+            {
+                // warning, yellow, no blink
+                fillImage.color = warningColor;
+            }
+            else
+            {
+                // danger, grey, blinking
+                float alpha = Mathf.Sin(Time.time * blinkSpeed * Mathf.PI) * 0.5f + 0.5f; //math sin moves the number from -1 and 1
+                fillImage.color = new Color(dangerColor.r, dangerColor.g, dangerColor.b, alpha);
+            }
+        }
+        else
+        {
+            //restore original color and full opacity
+            fillImage.color = originalColor;
+        }
     }
 }
