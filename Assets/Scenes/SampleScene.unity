@@ -440,7 +440,7 @@ Transform:
   m_GameObject: {fileID: 175474095}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.70719737, w: 0.7070162}
-  m_LocalPosition: {x: -15.4597, y: 23.3964, z: 0}
+  m_LocalPosition: {x: 12.1, y: 21.7, z: 0}
   m_LocalScale: {x: 2.7968025, y: 75.15237, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11981,6 +11981,7 @@ GameObject:
   - component: {fileID: 1432154193}
   - component: {fileID: 1432154194}
   - component: {fileID: 1432154195}
+  - component: {fileID: 1432154196}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -12228,6 +12229,37 @@ MonoBehaviour:
   Event: 
   EventPlayTrigger: 9
   EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &1432154196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432154188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1033220403
+      Data2: 1339507603
+      Data3: 1658381446
+      Data4: 126908522
+    Path: event:/PIGmusic
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0
