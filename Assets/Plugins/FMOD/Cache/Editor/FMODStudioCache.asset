@@ -1,25 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6378638423789655719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
-  m_EditorClassIdentifier: 
-  Path: E:/BAA/Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 639182644793619355
-  FileSizes:
-  - Name: Desktop
-    Value: 381408
-  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32,125 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
-  EditorBanks:
-  - {fileID: 8272888105245152080}
-  - {fileID: -6378638423789655719}
-  EditorEvents:
-  - {fileID: 6439596228357822877}
-  - {fileID: 2370672970668446260}
-  - {fileID: 5248013458583367227}
+  EditorBanks: []
+  EditorEvents: []
   EditorParameters: []
-  MasterBanks:
-  - {fileID: -6378638423789655719}
-  StringsBanks:
-  - {fileID: 8272888105245152080}
-  cacheVersion: 131848
-  cacheTime: 639182644793629575
-  SerializableEventsDict:
-  - key: event:/BAA
-    index: 0
-  - key: event:/PIGDEAD
-    index: 1
-  - key: event:/PIGSOUNDS
-    index: 2
---- !u!114 &2370672970668446260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/PIGDEAD
-  m_EditorClassIdentifier: 
-  Path: event:/PIGDEAD
-  Guid:
-    Data1: -1641984974
-    Data2: 1216568517
-    Data3: 1953365633
-    Data4: 1026322731
-  Banks:
-  - {fileID: -6378638423789655719}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 838
---- !u!114 &5248013458583367227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/PIGSOUNDS
-  m_EditorClassIdentifier: 
-  Path: event:/PIGSOUNDS
-  Guid:
-    Data1: 554204011
-    Data2: 1225969813
-    Data3: -1722968421
-    Data4: 1794957523
-  Banks:
-  - {fileID: -6378638423789655719}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 417
---- !u!114 &6439596228357822877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BAA
-  m_EditorClassIdentifier: 
-  Path: event:/BAA
-  Guid:
-    Data1: -150905280
-    Data2: 1104377768
-    Data3: 1384081593
-    Data4: 1264398735
-  Banks:
-  - {fileID: -6378638423789655719}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 1500
---- !u!114 &8272888105245152080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
-  m_EditorClassIdentifier: 
-  Path: E:/BAA/Build/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 639182644793629575
-  FileSizes:
-  - Name: Desktop
-    Value: 864
-  Exists: 1
+  MasterBanks: []
+  StringsBanks: []
+  cacheVersion: 131860
+  cacheTime: 0
+  SerializableEventsDict: []
