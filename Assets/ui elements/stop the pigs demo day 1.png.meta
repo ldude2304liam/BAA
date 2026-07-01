@@ -1,0 +1,442 @@
+fileFormatVersion: 2
+guid: 2d6da23eafc3aa7489251d1d7329d7c0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7609999115076398653
+    second: stop the pigs demo day 1_0
+  - first:
+      213: -1857164163851733602
+    second: stop the pigs demo day 1_1
+  - first:
+      213: -8382673812664937918
+    second: stop the pigs demo day 1_2
+  - first:
+      213: -9108494392907630952
+    second: stop the pigs demo day 1_3
+  - first:
+      213: -2932816509234888333
+    second: stop the pigs demo day 1_4
+  - first:
+      213: -2604864779743431705
+    second: stop the pigs demo day 1_5
+  - first:
+      213: 2883223854771388026
+    second: stop the pigs demo day 1_6
+  - first:
+      213: 2902979132383179372
+    second: stop the pigs demo day 1_7
+  - first:
+      213: 1480523449469051470
+    second: stop the pigs demo day 1_8
+  - first:
+      213: -5089063859180048395
+    second: stop the pigs demo day 1_9
+  - first:
+      213: -6802592343291024464
+    second: stop the pigs demo day 1_10
+  - first:
+      213: -5876432261059927641
+    second: stop the pigs demo day 1_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_0
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 324
+        width: 92
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c195d4df1ad36690800000000000000
+      internalID: -7609999115076398653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_1
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 329
+        width: 62
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e95380c58070a36e0800000000000000
+      internalID: -1857164163851733602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_2
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 289
+        width: 62
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2421328a492caab80800000000000000
+      internalID: -8382673812664937918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_3
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 329
+        width: 52
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8967a18cb90289180800000000000000
+      internalID: -9108494392907630952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_4
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 334
+        width: 62
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37147af6cea8c47d0800000000000000
+      internalID: -2932816509234888333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_5
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 334
+        width: 62
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e37773b849a9dbd0800000000000000
+      internalID: -2604864779743431705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_6
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 279
+        width: 67
+        height: 132
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7eb497e1d4430820800000000000000
+      internalID: 2883223854771388026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_7
+      rect:
+        serializedVersion: 2
+        x: 729
+        y: 409
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c623218e324794820800000000000000
+      internalID: 2902979132383179372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_8
+      rect:
+        serializedVersion: 2
+        x: 854
+        y: 329
+        width: 52
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e422d3fab30eb8410800000000000000
+      internalID: 1480523449469051470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_9
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 339
+        width: 72
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ff6b4212630069b0800000000000000
+      internalID: -5089063859180048395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_10
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 349
+        width: 27
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bba8523e465891a0800000000000000
+      internalID: -6802592343291024464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: stop the pigs demo day 1_11
+      rect:
+        serializedVersion: 2
+        x: 764
+        y: 269
+        width: 82
+        height: 132
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a1a0e44ef7b27ea0800000000000000
+      internalID: -5876432261059927641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      stop the pigs demo day 1_0: -7609999115076398653
+      stop the pigs demo day 1_1: -1857164163851733602
+      stop the pigs demo day 1_10: -6802592343291024464
+      stop the pigs demo day 1_11: -5876432261059927641
+      stop the pigs demo day 1_2: -8382673812664937918
+      stop the pigs demo day 1_3: -9108494392907630952
+      stop the pigs demo day 1_4: -2932816509234888333
+      stop the pigs demo day 1_5: -2604864779743431705
+      stop the pigs demo day 1_6: 2883223854771388026
+      stop the pigs demo day 1_7: 2902979132383179372
+      stop the pigs demo day 1_8: 1480523449469051470
+      stop the pigs demo day 1_9: -5089063859180048395
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
